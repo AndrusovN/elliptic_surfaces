@@ -1,0 +1,3 @@
+# A tool for calculating elliptic surface properties such as Zeta-function
+
+Currently, it's in the early development stage...
