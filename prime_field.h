@@ -29,13 +29,15 @@ public:
     bool operator == (const PrimeFieldElement<p>&) const;
 
     int to_int() const;
+
+    template <int p1>
+    friend std::ostream& operator<<(std::ostream&, const PrimeFieldElement<p1>&);
 private:
     int value;
 
-    friend std::ostream& operator<<(std::ostream&, const PrimeFieldElement<p>&);
 };
 
 template <int p>
-std::ostream& operator<<(std::ostream&, const PrimeFieldElement<p>&);
+std::ostream& operator<<(std::ostream& out, const PrimeFieldElement<p>& elem);
 
 #include "prime_field.cpp"

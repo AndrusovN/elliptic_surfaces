@@ -119,6 +119,6 @@ PrimeFieldElement<p> &PrimeFieldElement<p>::operator=(const PrimeFieldElement<p>
 }
 
 template <int p>
-std::ostream &operator<<(std::ostream& out, const PrimeFieldElement<p>& val) {
+std::ostream& operator<<(std::ostream& out, const PrimeFieldElement<p>& val) {
     return out << val.value;
 }
