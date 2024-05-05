@@ -20,6 +20,9 @@ public:
 
     template <int p, int d>
     void print_points(std::ostream&) const;
+
+    template <int p, int d>
+    void print_points(const std::string& folder) const;
 private:
     MultivariablePolynomial<3, int> constraint;
 };

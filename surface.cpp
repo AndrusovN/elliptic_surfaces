@@ -11,6 +11,16 @@ std::ostream &operator<<(std::ostream& out, const Point<Field_t>& pt) {
 Surface::Surface(const MultivariablePolynomial<3, int> &constraint): constraint(constraint) {}
 
 template<int p, int d>
+void Surface::print_points(const std::string &folder) const {
+    std::ofstream file;
+    std::string filename = (path(folder) / (std::to_string((int)std::pow(p, d)) + ".pts")).string();
+    file.open(filename, std::ios_base::out);
+    print_points<p, d>(file);
+    file.close();
+    std::cout << "Saved into " << filename << std::endl;
+}
+
+template<int p, int d>
 void Surface::print_points(std::ostream& out) const {
     auto points = find_points<p, d>();
     out << std::endl;

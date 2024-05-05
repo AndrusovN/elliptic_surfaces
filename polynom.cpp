@@ -265,14 +265,18 @@ Polynomial<Field_t> Polynomial<Field_t>::multiplied_by(const Polynomial<Field_t>
 
 template<Field Field_t>
 Polynomial<Field_t> &Polynomial<Field_t>::operator*=(const Polynomial<Field_t> &other) {
-    multiply(other);
+    if (degree() + other.degree() < 20) {
+        multiply_slow(other);
+    } else {
+        multiply(other);
+    }
     remove_leading_zeroes();
     return *this;
 }
 
 template<Field Field_t>
 Polynomial<Field_t> &Polynomial<Field_t>::operator%=(const Polynomial<Field_t> &other) {
-    auto [result, remainder] = divide_with_remainder(other);
+    auto [result, remainder] = (degree() + other.degree() < 20) ? divide_slow(other) : divide_with_remainder(other);
     std::swap(coefficients, remainder.coefficients);
     return *this;
 }
@@ -413,14 +417,10 @@ std::pair<Polynomial<Field_t>, Polynomial<Field_t>> Polynomial<Field_t>::divide_
     while (copy.degree() >= other.degree()) {
         Field_t coef = copy.coefficients.back() / other.coefficients.back();
         res.coefficients.push_back(coef);
-        for (size_t i = 0; i <= other.degree(); ++i) {
+        for (int i = 0; i <= other.degree(); ++i) {
             copy.coefficients[copy.degree() - other.degree() + i] -= other.coefficients[i] * coef;
         }
         copy.coefficients.pop_back();
-        while(copy.coefficients.back() == 0 && copy.degree() >= other.degree()) {
-            res.coefficients.push_back(0);
-            copy.coefficients.pop_back();
-        }
     }
     copy.remove_leading_zeroes();
     res = res.reversed();
@@ -437,15 +437,13 @@ Polynomial<Field_t> Polynomial<Field_t>::multiplied_slow_by(const Polynomial<Fie
 template<Field Field_t>
 Polynomial<Field_t> Polynomial<Field_t>::multiply_slow(const Polynomial<Field_t> &other) {
     Polynomial<Field_t> result;
-    if (*this == 0 || other == 0) return 0;
     result.coefficients.resize(degree() + other.degree() + 1, 0);
-    for (size_t i = 0; i < result.coefficients.size(); ++i) {
-        for (size_t j = 0; j <= degree(); ++j) {
-            if (i - j >= 0 && i - j <= other.degree()) {
-                result.coefficients[i] += coefficients[j] * other.coefficients[i - j];
-            }
+    for (int i = 0; i <= degree(); ++i) {
+        for (int j = 0; j <= other.degree(); ++j) {
+            result.coefficients[i + j] += coefficients[i] * other.coefficients[j];
         }
     }
+    result.remove_leading_zeroes();
     std::swap(coefficients, result.coefficients);
     return *this;
 }

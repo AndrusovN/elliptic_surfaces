@@ -91,7 +91,11 @@ extended_euclidean_algorithm(const Polynomial<Field_t>& A, const Polynomial<Fiel
 
 template<int p, int d>
 void GaloisFieldElement<p, d>::init() {
-    GaloisFieldElement<p, d>::MOD = get_prime_polynomial_cached<p>(d);
+    if (d == 1) {
+        MOD = Polynomial<PrimeFieldElement<p>>({0, 1});
+    } else {
+        GaloisFieldElement<p, d>::MOD = get_prime_polynomial_cached<p>(d);
+    }
 }
 
 template<int p, int d>
